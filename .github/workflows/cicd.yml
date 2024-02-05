@@ -61,5 +61,5 @@ jobs:
           script: |
             whoami
             docker image prune -af
-            docker pull ${{ secrets.DOCKERHUB_NAME }}/projectname-backend
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/project-backend
             docker-compose up -d

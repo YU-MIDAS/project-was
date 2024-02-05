@@ -21,7 +21,7 @@ public class UserController {
         return userService.list();
     }
 
-    @GetMapping("/test")
+    @GetMapping("/new")
     public ResponseEntity<String> test(){
         return ResponseEntity.ok("success");
     }
