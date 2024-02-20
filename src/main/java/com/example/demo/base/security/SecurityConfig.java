@@ -33,8 +33,8 @@ public class SecurityConfig {
                 }))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/user/list").authenticated()
-                        .requestMatchers("/api/user/register").permitAll())
+                        .requestMatchers("/api/user/**").authenticated()
+                        .requestMatchers("/api/auth/**").permitAll())
                 .formLogin(withDefaults())
                 .httpBasic(withDefaults());
 
