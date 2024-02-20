@@ -18,9 +18,4 @@ public class UserController {
     public List<User> list(){
         return userService.list();
     }
-
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
-        return userService.register(user);
-    }
 }
