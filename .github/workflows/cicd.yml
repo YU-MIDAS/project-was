@@ -24,10 +24,10 @@ jobs:
           distribution: 'temurin'
 
       # 3. properties 설정
-      - name: Set up application.properties
+      - name: Set up application.yml
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.APPLICATION }}" > src/main/resources/application.properties
+          echo "${{ secrets.APPLICATION }}" > src/main/resources/application.yml
 
       # 4. gradlew build
       - name: Build with Gradle
