@@ -33,7 +33,7 @@ public class AuthController {
     @PostMapping("/sign-in")
     public ResponseEntity signIn(@RequestBody SignInUserRequest request) {
         try{
-            return ResponseEntity.ok().body(authService.authenticate(request));
+            return ResponseEntity.ok().body(authService.signIn(request));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("로그인에 실패했습니다. " + e.getMessage());

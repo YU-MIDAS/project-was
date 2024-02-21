@@ -14,22 +14,22 @@ public class JwtProvider {
 
     private final JwtProperties jwtProperties;
 
-    public String generatorAccessToken(Authentication authentication){
+    public String generatorAccessToken(String username){
         Date now = new Date();
         return Jwts.builder()
                 .setIssuer(jwtProperties.getIssuer())
-                .setSubject(authentication.getName())
+                .setSubject(username)
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey().getBytes())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + jwtProperties.getAccessExpiration()))
                 .compact();
     }
 
-    public String generatorRefreshToken(Authentication authentication){
+    public String generatorRefreshToken(String username){
         Date now = new Date();
         return Jwts.builder()
                 .setIssuer(jwtProperties.getIssuer())
-                .setSubject(authentication.getName())
+                .setSubject(username)
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey().getBytes())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + jwtProperties.getRefreshExpiration()))
