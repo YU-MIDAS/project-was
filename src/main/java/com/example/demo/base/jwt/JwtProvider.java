@@ -1,12 +1,11 @@
 package com.example.demo.base.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.Optional;
@@ -35,5 +34,13 @@ public class JwtProvider {
                 .filter(token -> token.startsWith(BEARER))
                 .map(token -> token.replace(BEARER, ""))
                 .orElseThrow(() -> new Exception ("토큰이 존재하지 않습니다. "));
+    }
+
+    public Claims getValidToken(String token){
+        return Jwts.parserBuilder()
+                .setSigningKey(jwtProperties.getSecretKey().getBytes())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
