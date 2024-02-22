@@ -33,10 +33,10 @@ public class RefreshTokenService {
     /**
      * Refresh Token Rotation(RTR) - 기존 refresh token 으로 refresh token 재발급
      */
-    public String reIssueRefreshToken(String token) throws Exception{
+    public RefreshToken reIssueRefreshToken(String token) throws Exception{
         RefreshToken refreshToken = read(token);
         refreshToken.reIssueToken(UUID.randomUUID().toString(), jwtProperties.getRefreshExpiration());
-        return refreshTokenRepository.save(refreshToken).getToken();
+        return refreshTokenRepository.save(refreshToken);
     }
 
 }

@@ -3,7 +3,8 @@ package com.example.demo.bounded_context.auth.dto;
 import lombok.Getter;
 
 @Getter
-public class SignInUserRequest {
-    String username;
+public class SignUpAccountRequest {
+    String accountName;
     String password;
+    String email;
 }
