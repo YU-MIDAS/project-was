@@ -1,5 +1,7 @@
 package com.example.demo.base.jwt;
 
+import com.example.demo.base.exception.CustomException;
+import com.example.demo.base.exception.ExceptionCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,11 +31,11 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String parseToken(HttpServletRequest request) throws Exception{
+    public String parseToken(HttpServletRequest request) throws CustomException {
         return Optional.ofNullable(request.getHeader(AUTH_HEADER))
                 .filter(token -> token.startsWith(BEARER))
                 .map(token -> token.replace(BEARER, ""))
-                .orElseThrow(() -> new Exception ("토큰이 존재하지 않습니다. "));
+                .orElseThrow(() -> new CustomException(ExceptionCode.EMPTY_TOKEN));
     }
 
     public Claims getValidToken(String token){

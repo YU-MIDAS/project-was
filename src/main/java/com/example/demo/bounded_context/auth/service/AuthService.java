@@ -1,5 +1,7 @@
 package com.example.demo.bounded_context.auth.service;
 
+import com.example.demo.base.exception.ExceptionCode;
+import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.jwt.JwtProvider;
 import com.example.demo.base.refresh_token.RefreshToken;
 import com.example.demo.base.refresh_token.RefreshTokenService;
@@ -26,7 +28,7 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public Account signUp(@RequestBody SignUpAccountRequest request) throws Exception{
+    public Account signUp(@RequestBody SignUpAccountRequest request){
         isDuplicated(request.getAccountName());
 
         Account account = Account.builder()
@@ -41,7 +43,7 @@ public class AuthService {
     /**
      * username/password 로그인 메서드
      */
-    public TokenResponse signIn(@RequestBody SignInAccountRequest request) throws Exception{
+    public TokenResponse signIn(@RequestBody SignInAccountRequest request){
         User user = authenticate(request);
         String accessToken = jwtProvider.generatorAccessToken(user.getId());
         String refreshToken = refreshTokenService.issueRefreshToken(user.getId());
@@ -55,7 +57,7 @@ public class AuthService {
     /**
      * refresh token 로 access / refresh token 발급
      */
-    public TokenResponse reIssueToken(String token) throws Exception{
+    public TokenResponse reIssueToken(String token){
         RefreshToken refreshToken = refreshTokenService.reIssueRefreshToken(token);
         String accessToken = jwtProvider.generatorAccessToken(refreshToken.getUserId());
 
@@ -65,9 +67,9 @@ public class AuthService {
                 .build();
     }
 
-    public void isDuplicated(String accountName) throws Exception {
+    public void isDuplicated(String accountName){
         if (accountRepository.findByAccountName(accountName).isPresent()){
-            throw new Exception("중복된 계정이름이 존재합니다.");
+            throw new CustomException(ExceptionCode.DUPLICATE_NAME);
         }
     }
 
@@ -75,7 +77,7 @@ public class AuthService {
     /**
      * 인증 메서드
      */
-    public User authenticate(SignInAccountRequest request) throws Exception{
+    public User authenticate(SignInAccountRequest request){
         //인증 객체 셍성 : Authentication 구현 객체 UsernamePasswordAuthenticationToken
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(request.getAccountName(), request.getPassword());

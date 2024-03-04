@@ -6,7 +6,6 @@ import com.example.demo.bounded_context.auth.dto.SignUpAccountRequest;
 import com.example.demo.bounded_context.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,24 +22,16 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpAccountRequest request) {
-        try{
-            authService.signUp(request);
-            return ResponseEntity.ok()
-                    .body("회원가입에 성공했습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("회원가입에 실패했습니다. " + e.getMessage());
-        }
+        authService.signUp(request);
+        return ResponseEntity.ok().body("회원가입에 성공했습니다.");
     }
 
+    /**
+     * 아이디 / 비밀번호로 로그인
+     */
     @PostMapping("/sign-in")
     public ResponseEntity signIn(@RequestBody SignInAccountRequest request) {
-        try{
-            return ResponseEntity.ok().body(authService.signIn(request));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("로그인에 실패했습니다. " + e);
-        }
+        return ResponseEntity.ok().body(authService.signIn(request));
     }
 
     /**
@@ -48,12 +39,7 @@ public class AuthController {
      */
     @PostMapping("/token")
     public ResponseEntity token(HttpServletRequest request) {
-        try{
-            String refreshToken = jwtProvider.parseToken(request);
-            return ResponseEntity.ok().body(authService.reIssueToken(refreshToken));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("로그인에 실패했습니다. " + e.getMessage());
-        }
+        String refreshToken = jwtProvider.parseToken(request);
+        return ResponseEntity.ok().body(authService.reIssueToken(refreshToken));
     }
 }
