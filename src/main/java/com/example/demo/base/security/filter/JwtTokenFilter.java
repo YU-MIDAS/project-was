@@ -1,6 +1,10 @@
 package com.example.demo.base.security.filter;
 
+import com.example.demo.base.exception.CustomException;
+import com.example.demo.base.exception.ExceptionCode;
+import com.example.demo.base.exception.ExceptionResponse;
 import com.example.demo.base.jwt.JwtProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -24,6 +28,14 @@ import java.io.IOException;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private final ObjectMapper objectMapper;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().startsWith("/swagger-ui") ||
+                request.getServletPath().startsWith("/api/auth") ||
+                request.getServletPath().startsWith("/v3/api-docs");
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -37,22 +49,21 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
     }
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getServletPath().startsWith("/api/auth");
-    }
-
     public void jwtExceptionHandler(HttpServletResponse response, Exception exception) throws IOException{
+        ExceptionCode exceptionCode = null;
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setStatus(401);
         if (exception instanceof SignatureException) {
-            response.getWriter().write("토큰이 유효하지 않습니다.");
+            exceptionCode = ExceptionCode.INVALID_TOKEN;
         } else if (exception instanceof MalformedJwtException) {
-            response.getWriter().write("올바르지 않은 토큰입니다.");
+            exceptionCode = ExceptionCode.WRONG_TOKEN;
         } else if (exception instanceof ExpiredJwtException) {
-            response.getWriter().write("토큰이 만료되었습니다.");
-        } else {
-            response.getWriter().write("인증 에러 발생: " + exception.getMessage());
+            exceptionCode = ExceptionCode.EXPIRE_ACCESS_TOKEN;
+        } else if (exception instanceof CustomException){
+            exceptionCode = ((CustomException) exception).getExceptionCode();
         }
+        ExceptionResponse exceptionResponse = ExceptionResponse.of(exceptionCode);
+        response.getWriter().write(objectMapper.writeValueAsString(exceptionResponse));
     }
 }
