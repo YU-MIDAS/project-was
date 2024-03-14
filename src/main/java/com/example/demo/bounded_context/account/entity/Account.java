@@ -1,5 +1,6 @@
 package com.example.demo.bounded_context.account.entity;
 
+import com.example.demo.base.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,10 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Account {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Account extends BaseTimeEntity {
     @Column(nullable = false)
     private String accountName;
 
