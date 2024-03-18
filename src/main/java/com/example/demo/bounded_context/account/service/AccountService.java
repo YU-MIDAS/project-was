@@ -1,5 +1,6 @@
 package com.example.demo.bounded_context.account.service;
 
+import com.example.demo.base.Resolver.AccessToken;
 import com.example.demo.base.blacklist_token.BlacklistTokenService;
 import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.exception.ExceptionCode;
@@ -36,10 +37,9 @@ public class AccountService {
     /**
      * access / refresh token 로 로그아웃
      */
-    public void signOut(String accessToken, String refreshToken){
+    public void signOut(AccessToken accessToken, String refreshToken){
         RefreshToken refresh = refreshTokenService.read(refreshToken);
-        Claims claims = jwtProvider.getValidToken(accessToken);
-        if(refresh.getUserId().equals(claims.get("userId"))){
+        if(refresh.getUserId() != accessToken.getAccountId()){
             throw new CustomException(ExceptionCode.INVALID_SIGN_OUT);
         }
         blacklistTokenService.create(accessToken);

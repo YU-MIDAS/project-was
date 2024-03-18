@@ -1,5 +1,6 @@
 package com.example.demo.base.blacklist_token;
 
+import com.example.demo.base.Resolver.AccessToken;
 import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.exception.ExceptionCode;
 import com.example.demo.base.jwt.JwtProvider;
@@ -20,12 +21,8 @@ public class BlacklistTokenService {
         }
     }
 
-    public BlacklistToken create(String accessToken){
-        Claims claims = jwtProvider.getValidToken(accessToken);
-        BlacklistToken blacklistToken = BlacklistToken.builder()
-                .invalidAccessToken(accessToken)
-                .timeToLive(claims.getExpiration())
-                .build();
+    public BlacklistToken create(AccessToken accessToken){
+        BlacklistToken blacklistToken = BlacklistToken.of(accessToken);
         return blackListTokenRepository.save(blacklistToken);
     }
 }

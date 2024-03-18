@@ -1,5 +1,7 @@
 package com.example.demo.bounded_context.account.controller;
 
+import com.example.demo.base.Resolver.AccessToken;
+import com.example.demo.base.Resolver.AuthorizationHeader;
 import com.example.demo.base.common.AuthConstants;
 import com.example.demo.base.jwt.JwtProvider;
 import com.example.demo.bounded_context.account.entity.Account;
@@ -26,9 +28,9 @@ public class AccountController {
 
     @PostMapping("/sign-out")
     @Operation(summary = "로그아웃", description = "access / refresh token 을 사용한 로그아웃")
-    public ResponseEntity signOut(@RequestHeader(AuthConstants.AUTH_HEADER) String accessToken,
+    public ResponseEntity signOut(@AuthorizationHeader AccessToken accessToken,
                                   @CookieValue(AuthConstants.REFRESH_TOKEN) String refreshToken) {
-        accountService.signOut(jwtProvider.parseToken(accessToken), refreshToken);
+        accountService.signOut(accessToken, refreshToken);
         return ResponseEntity.ok().body("로그아웃에 성공했습니다.");
     }
 }
