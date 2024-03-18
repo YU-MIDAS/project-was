@@ -4,13 +4,11 @@ import com.example.demo.base.Resolver.AccessToken;
 import com.example.demo.base.blacklist_token.BlacklistTokenService;
 import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.exception.ExceptionCode;
-import com.example.demo.base.jwt.JwtProvider;
 import com.example.demo.base.refresh_token.RefreshToken;
 import com.example.demo.base.refresh_token.RefreshTokenRepository;
 import com.example.demo.base.refresh_token.RefreshTokenService;
 import com.example.demo.bounded_context.account.entity.Account;
 import com.example.demo.bounded_context.account.repository.AccountRepository;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +19,16 @@ import java.util.List;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final RefreshTokenService refreshTokenService;
-    private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final BlacklistTokenService blacklistTokenService;
 
     public Account read(String accountName){
         return accountRepository.findByAccountName(accountName)
+                .orElseThrow(() -> new CustomException(ExceptionCode.ACCOUNT_NOT_FOUND));
+    }
+
+    public Account read(Long accountName){
+        return accountRepository.findById(accountName)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ACCOUNT_NOT_FOUND));
     }
 
