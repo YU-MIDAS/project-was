@@ -1,5 +1,6 @@
 package com.example.demo.base.jwt;
 
+import com.example.demo.base.common.AuthConstants;
 import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.exception.ExceptionCode;
 import io.jsonwebtoken.Claims;
@@ -17,8 +18,6 @@ import java.util.Optional;
 public class JwtProvider {
 
     private final JwtProperties jwtProperties;
-    private final String AUTH_HEADER = "Authorization";
-    private final String BEARER = "Bearer ";
 
     public String generatorAccessToken(Long userId){
         Date now = new Date();
@@ -32,9 +31,9 @@ public class JwtProvider {
     }
 
     public String parseToken(HttpServletRequest request) throws CustomException {
-        return Optional.ofNullable(request.getHeader(AUTH_HEADER))
-                .filter(token -> token.startsWith(BEARER))
-                .map(token -> token.replace(BEARER, ""))
+        return Optional.ofNullable(request.getHeader(AuthConstants.AUTH_HEADER))
+                .filter(token -> token.startsWith(AuthConstants.BEARER))
+                .map(token -> token.replace(AuthConstants.BEARER, ""))
                 .orElseThrow(() -> new CustomException(ExceptionCode.EMPTY_TOKEN));
     }
 

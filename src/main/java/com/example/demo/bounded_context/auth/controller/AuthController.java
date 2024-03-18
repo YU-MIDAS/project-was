@@ -2,14 +2,12 @@ package com.example.demo.bounded_context.auth.controller;
 
 import com.example.demo.base.common.AuthConstants;
 import com.example.demo.base.common.HeaderProvider;
-import com.example.demo.base.jwt.JwtProvider;
 import com.example.demo.bounded_context.auth.dto.SignInAccountRequest;
 import com.example.demo.bounded_context.auth.dto.SignUpAccountRequest;
 import com.example.demo.bounded_context.auth.dto.TokenResponse;
 import com.example.demo.bounded_context.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final JwtProvider jwtProvider;
     private final HeaderProvider headerProvider;
 
     @PostMapping("/sign-up")
@@ -42,7 +39,7 @@ public class AuthController {
 
     @PostMapping("/token")
     @Operation(summary = "토큰 재발급", description = "refresh token 이 정상적인 경우 access/refresh token 재발급 (RTR)")
-    public ResponseEntity token(@CookieValue("RefreshToken") String refreshToken) {
+    public ResponseEntity token(@CookieValue(AuthConstants.REFRESH_TOKEN) String refreshToken) {
         TokenResponse tokenResponse = authService.reIssueToken(refreshToken);
         HttpHeaders httpHeaders = headerProvider.generateTokenHeader(tokenResponse);
         return ResponseEntity.ok().headers(httpHeaders).body("토큰 재발급에 성공했습니다.");
