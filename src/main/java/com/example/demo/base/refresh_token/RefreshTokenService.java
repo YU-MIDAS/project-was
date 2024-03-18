@@ -29,7 +29,7 @@ public class RefreshTokenService {
     /**
      * refresh token 발급
      */
-    public String issueRefreshToken(Long id){
+    public RefreshToken issueRefreshToken(Long id){
         Date now = new Date();
         final RefreshToken refreshToken = RefreshToken.builder()
                 .userId(id)
@@ -37,7 +37,7 @@ public class RefreshTokenService {
                 .timeToLive(new Date(now.getTime() + jwtProperties.getRefreshExpiration()))
                 .build();
         refreshTokenRepository.save(refreshToken);
-        return refreshToken.getToken();
+        return refreshToken;
     }
 
     /**
