@@ -46,11 +46,11 @@ public class AuthService {
     public TokenResponse signIn(@RequestBody SignInAccountRequest request){
         User user = authenticate(request);
         String accessToken = jwtProvider.generatorAccessToken(user.getId());
-        String refreshToken = refreshTokenService.issueRefreshToken(user.getId());
+        RefreshToken refreshToken = refreshTokenService.issueRefreshToken(user.getId());
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .refreshToken(refreshToken.getToken())
                 .build();
     }
 

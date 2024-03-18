@@ -36,8 +36,7 @@ public class RefreshTokenService {
                 .token(UUID.randomUUID().toString())
                 .timeToLive(new Date(now.getTime() + jwtProperties.getRefreshExpiration()))
                 .build();
-        refreshTokenRepository.save(refreshToken);
-        return refreshToken;
+        return refreshTokenRepository.save(refreshToken);
     }
 
     /**
