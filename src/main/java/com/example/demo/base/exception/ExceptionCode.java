@@ -17,6 +17,8 @@ public enum ExceptionCode {
 
     //request
     INVALID_BODY("BODY", HttpStatus.BAD_REQUEST, "올바르지 않은 바디 값 입니다."),
+    INVALID_HEADER("HEADER", HttpStatus.BAD_REQUEST, "올바르지 않은 헤더 값 입니다."),
+    INVALID_COOKIE("COOKIE", HttpStatus.BAD_REQUEST, "올바르지 않은 쿠키 값 입니다."),
 
     ACCOUNT_NOT_FOUND("AUTH", HttpStatus.BAD_REQUEST, "해당 계정이름을 찾을 수 없습니다."),
     INVALID_PASSWORD("AUTH", HttpStatus.UNAUTHORIZED, "유효하지 않은 비밀번호 입니다."),
