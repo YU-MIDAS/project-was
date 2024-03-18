@@ -3,15 +3,11 @@ package com.example.demo.base.jwt;
 import com.example.demo.base.common.AuthConstants;
 import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.exception.ExceptionCode;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -30,11 +26,16 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String parseToken(HttpServletRequest request) throws CustomException {
-        return Optional.ofNullable(request.getHeader(AuthConstants.AUTH_HEADER))
-                .filter(token -> token.startsWith(AuthConstants.BEARER))
-                .map(token -> token.replace(AuthConstants.BEARER, ""))
-                .orElseThrow(() -> new CustomException(ExceptionCode.EMPTY_TOKEN));
+    public String parseToken(HttpServletRequest request) {
+        return parseToken(request.getHeader(AuthConstants.AUTH_HEADER));
+    }
+
+    public String parseToken(String token){
+        if(token.startsWith(AuthConstants.BEARER)){
+            return token.substring(AuthConstants.BEARER.length());
+        }else{
+            throw new CustomException(ExceptionCode.WRONG_TOKEN);
+        }
     }
 
     public Claims getValidToken(String token){
