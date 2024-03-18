@@ -1,5 +1,6 @@
 package com.example.demo.base.security.filter;
 
+import com.example.demo.base.blacklist_token.BlacklistTokenService;
 import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.exception.ExceptionCode;
 import com.example.demo.base.exception.ExceptionResponse;
@@ -28,6 +29,7 @@ import java.io.IOException;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private final BlacklistTokenService blacklistTokenService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -40,7 +42,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
-            Claims claims = jwtProvider.getValidToken(jwtProvider.parseToken(request));
+            String accessToken = jwtProvider.parseToken(request);
+            blacklistTokenService.checkBlacklist(accessToken);
+            Claims claims = jwtProvider.getValidToken(accessToken);
             Authentication authentication = new UsernamePasswordAuthenticationToken(claims.get("userId"), null, null);
             SecurityContextHolder.getContext().setAuthentication(authentication); //인증정보 저장
             filterChain.doFilter(request, response);

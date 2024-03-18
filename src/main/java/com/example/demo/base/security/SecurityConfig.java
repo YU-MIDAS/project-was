@@ -1,6 +1,7 @@
 package com.example.demo.base.security;
 
 
+import com.example.demo.base.blacklist_token.BlacklistTokenService;
 import com.example.demo.base.jwt.JwtProvider;
 import com.example.demo.base.security.filter.JwtTokenFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +28,7 @@ public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final ObjectMapper objectMapper;
+    private final BlacklistTokenService blacklistTokenService;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -47,7 +49,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/account/**").authenticated()
                         .anyRequest().permitAll())
-                .addFilterBefore(new JwtTokenFilter(jwtProvider, objectMapper), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(jwtProvider, blacklistTokenService, objectMapper), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(withDefaults())
                 .httpBasic(withDefaults());
 
