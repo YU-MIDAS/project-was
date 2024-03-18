@@ -4,7 +4,6 @@ import com.example.demo.base.Resolver.AccessToken;
 import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.exception.ExceptionCode;
 import com.example.demo.base.jwt.JwtProvider;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
