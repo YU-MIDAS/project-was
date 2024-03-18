@@ -1,6 +1,7 @@
 package com.example.demo.bounded_context.account.entity;
 
-import com.example.demo.base.entity.BaseTimeEntity;
+
+import com.example.demo.base.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
