@@ -1,5 +1,8 @@
 package com.example.demo.base.security;
 
+import com.example.demo.base.exception.CustomException;
+import com.example.demo.base.exception.ExceptionCode;
+import com.example.demo.base.exception.ExceptionResponse;
 import com.example.demo.bounded_context.account.entity.Account;
 
 import com.example.demo.bounded_context.account.service.AccountService;
@@ -18,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountService.read(username);
+        Account account = accountService.read(Long.parseLong(username));
         return User.of(account);
     }
 }

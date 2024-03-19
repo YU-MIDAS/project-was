@@ -28,6 +28,7 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final ObjectMapper objectMapper;
     private final BlacklistTokenService blacklistTokenService;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,7 +49,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/account/**").authenticated()
                         .anyRequest().permitAll())
-                .addFilterBefore(new JwtTokenFilter(jwtProvider, blacklistTokenService, objectMapper), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(jwtProvider, blacklistTokenService, objectMapper, userDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(withDefaults())
                 .httpBasic(withDefaults());
 

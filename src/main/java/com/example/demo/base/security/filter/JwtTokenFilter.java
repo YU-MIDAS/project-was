@@ -5,6 +5,7 @@ import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.exception.ExceptionCode;
 import com.example.demo.base.exception.ExceptionResponse;
 import com.example.demo.base.jwt.JwtProvider;
+import com.example.demo.base.security.UserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -19,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -31,6 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final BlacklistTokenService blacklistTokenService;
     private final ObjectMapper objectMapper;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -43,9 +47,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
             String accessToken = jwtProvider.parseToken(request);
-            blacklistTokenService.checkBlacklist(accessToken);
-            Claims claims = jwtProvider.getValidToken(accessToken);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(claims.get("userId"), null, null);
+            blacklistTokenService.checkBlacklist(accessToken); //무효화된 토큰 검사
+            UserDetails userDetails = userDetailsService.loadUserByUsername(jwtProvider.getAccountId(accessToken)); //토큰 계정 검사
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
             SecurityContextHolder.getContext().setAuthentication(authentication); //인증정보 저장
             filterChain.doFilter(request, response);
         }catch (Exception e){
@@ -58,6 +62,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(401);
+        ExceptionResponse exceptionResponse;
         if (exception instanceof SignatureException) {
             exceptionCode = ExceptionCode.INVALID_TOKEN;
         } else if (exception instanceof MalformedJwtException) {
@@ -67,7 +72,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         } else if (exception instanceof CustomException){
             exceptionCode = ((CustomException) exception).getExceptionCode();
         }
-        ExceptionResponse exceptionResponse = ExceptionResponse.of(exceptionCode);
+        if (exceptionCode != null){
+            exceptionResponse = ExceptionResponse.of(exceptionCode);
+        } else {
+            exceptionResponse = ExceptionResponse.of(exception);
+        }
         response.getWriter().write(objectMapper.writeValueAsString(exceptionResponse));
     }
 }
