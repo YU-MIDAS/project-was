@@ -28,11 +28,11 @@ public class AuthorizationResolver implements HandlerMethodArgumentResolver {
         Claims claims = jwtProvider.getValidToken(token);
 
         if (Long.class.equals(parameter.getParameterType())) {
-            return ((Number) claims.get("userId")).longValue();
+            return Long.valueOf(claims.get("accountId").toString());
         }
         return AccessToken.builder()
                 .token(token)
-                .accountId(((Number) claims.get("userId")).longValue())
+                .accountId(Long.valueOf(claims.get("accountId").toString()))
                 .timeToLive(claims.getExpiration())
                 .build();
     }

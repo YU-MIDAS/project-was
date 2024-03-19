@@ -15,11 +15,11 @@ public class JwtProvider {
 
     private final JwtProperties jwtProperties;
 
-    public String generatorAccessToken(Long userId){
+    public String generatorAccessToken(Long accountId){
         Date now = new Date();
         return Jwts.builder()
                 .setIssuer(jwtProperties.getIssuer())
-                .claim("userId", userId)
+                .claim("accountId", accountId)
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey().getBytes())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + jwtProperties.getAccessExpiration()))
@@ -47,5 +47,9 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public String getAccountId(String token){
+        return getValidToken(token).get("accountId").toString();
     }
 }
