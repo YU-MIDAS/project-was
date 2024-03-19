@@ -5,6 +5,7 @@ import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.jwt.JwtProvider;
 import com.example.demo.base.refresh_token.RefreshToken;
 import com.example.demo.base.refresh_token.RefreshTokenService;
+import com.example.demo.bounded_context.account.service.AccountService;
 import com.example.demo.bounded_context.auth.dto.SignInAccountRequest;
 import com.example.demo.bounded_context.auth.dto.SignUpAccountRequest;
 import com.example.demo.bounded_context.auth.dto.TokenResponse;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -78,9 +80,11 @@ public class AuthService {
      * 인증 메서드
      */
     public User authenticate(SignInAccountRequest request){
+        //loadUserByUsername 을 사용하기 위한 id
+        Long id = accountService.read(request.getAccountName()).getId();
         //인증 객체 셍성 : Authentication 구현 객체 UsernamePasswordAuthenticationToken
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(request.getAccountName(), request.getPassword());
+                new UsernamePasswordAuthenticationToken(id, request.getPassword());
 
         //인증 : CustomUserDetailsService - loadUserByUsername 사용
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
