@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
@@ -30,6 +31,7 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
+    @Transactional
     public Account signUp(@RequestBody SignUpAccountRequest request){
         isDuplicated(request.getAccountName());
 
