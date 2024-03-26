@@ -8,6 +8,7 @@ import com.example.demo.bounded_context.auth.dto.TokenResponse;
 import com.example.demo.bounded_context.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     @Operation(summary = "기본 회원가입", description = "아이디 / 비밀번호를 사용한 회원가입")
-    public ResponseEntity signUp(@RequestBody SignUpAccountRequest request) {
+    public ResponseEntity signUp(@Valid  @RequestBody SignUpAccountRequest request) {
         authService.signUp(request);
         return ResponseEntity.ok().body("회원가입에 성공했습니다.");
     }
