@@ -2,11 +2,8 @@ package com.example.demo.bounded_context.account.entity;
 
 
 import com.example.demo.base.common.BaseTimeEntity;
-import com.example.demo.bounded_context.account.dto.PatchAccountRequest;
 import jakarta.persistence.*;
 import lombok.*;
-
-import javax.sound.midi.Patch;
 
 @Entity
 @Getter
@@ -15,11 +12,13 @@ import javax.sound.midi.Patch;
 public class Account extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String accountName;
+
     @Column(nullable = false)
     private String password;
+
     @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false, unique = true)
+
     private String nickname;
 
     private String region;
@@ -31,14 +30,6 @@ public class Account extends BaseTimeEntity {
         this.email = email;
         this.nickname = nickname;
         this.region = region;
-    }
-
-    public Account update(PatchAccountRequest requestDto){
-        this.password = requestDto.getPassword();
-        this.email = requestDto.getEmail();
-        this.nickname = requestDto.getNickname();
-        this.region = requestDto.getRegion();
-        return this;
     }
 }
 
