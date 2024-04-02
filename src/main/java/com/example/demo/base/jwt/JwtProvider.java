@@ -28,7 +28,7 @@ public class JwtProvider {
 
     public String parseToken(HttpServletRequest request) {
         if(request.getHeader(AuthConstants.AUTH_HEADER) == null){
-            throw new CustomException(ExceptionCode.EMPTY_TOKEN);
+            throw new CustomException(ExceptionCode.INVALID_HEADER);
         }
         return parseToken(request.getHeader(AuthConstants.AUTH_HEADER));
     }

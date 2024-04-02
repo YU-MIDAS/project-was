@@ -4,8 +4,12 @@ import com.example.demo.base.blacklist_token.BlacklistTokenService;
 import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.exception.ExceptionCode;
 import com.example.demo.base.exception.ExceptionResponse;
+import com.example.demo.base.exception.JwtExceptionProvider;
 import com.example.demo.base.jwt.JwtProvider;
 import com.example.demo.base.security.UserDetailsServiceImpl;
+import com.example.demo.bounded_context.account.entity.Account;
+import com.example.demo.bounded_context.account.service.AccountService;
+import com.example.demo.bounded_context.auth.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -34,7 +38,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final BlacklistTokenService blacklistTokenService;
     private final ObjectMapper objectMapper;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final AccountService accountService;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -48,8 +52,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try{
             String accessToken = jwtProvider.parseToken(request);
             blacklistTokenService.checkBlacklist(accessToken); //무효화된 토큰 검사
-            UserDetails userDetails = userDetailsService.loadUserByUsername(jwtProvider.getAccountId(accessToken)); //토큰 계정 검사
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
+            Long accountId = Long.parseLong(jwtProvider.getAccountId(accessToken)); //토큰 id 추출
+            Account account = accountService.read(accountId); //데이터베이스 검사
+            Authentication authentication = new UsernamePasswordAuthenticationToken(User.of(account), null, null); //인증객체 생성
             SecurityContextHolder.getContext().setAuthentication(authentication); //인증정보 저장
             filterChain.doFilter(request, response);
         }catch (Exception e){
@@ -58,25 +63,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     public void jwtExceptionHandler(HttpServletResponse response, Exception exception) throws IOException{
-        ExceptionCode exceptionCode = null;
+        ExceptionResponse exceptionResponse = JwtExceptionProvider.generatorExceptionResponse(exception);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(401);
-        ExceptionResponse exceptionResponse;
-        if (exception instanceof SignatureException) {
-            exceptionCode = ExceptionCode.INVALID_TOKEN;
-        } else if (exception instanceof MalformedJwtException) {
-            exceptionCode = ExceptionCode.WRONG_TOKEN;
-        } else if (exception instanceof ExpiredJwtException) {
-            exceptionCode = ExceptionCode.EXPIRE_ACCESS_TOKEN;
-        } else if (exception instanceof CustomException){
-            exceptionCode = ((CustomException) exception).getExceptionCode();
-        }
-        if (exceptionCode != null){
-            exceptionResponse = ExceptionResponse.of(exceptionCode);
-        } else {
-            exceptionResponse = ExceptionResponse.of(exception);
-        }
         response.getWriter().write(objectMapper.writeValueAsString(exceptionResponse));
     }
 }

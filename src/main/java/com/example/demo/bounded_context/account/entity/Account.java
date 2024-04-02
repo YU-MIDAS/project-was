@@ -10,11 +10,13 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 public class Account extends BaseTimeEntity {
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String accountName;
 
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
     private String nickname;

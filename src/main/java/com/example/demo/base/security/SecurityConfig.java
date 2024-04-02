@@ -4,12 +4,14 @@ package com.example.demo.base.security;
 import com.example.demo.base.blacklist_token.BlacklistTokenService;
 import com.example.demo.base.jwt.JwtProvider;
 import com.example.demo.base.security.filter.JwtTokenFilter;
+import com.example.demo.bounded_context.account.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,11 +30,12 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final ObjectMapper objectMapper;
     private final BlacklistTokenService blacklistTokenService;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final AccountService accountService;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
@@ -49,7 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/account/**").authenticated()
                         .anyRequest().permitAll())
-                .addFilterBefore(new JwtTokenFilter(jwtProvider, blacklistTokenService, objectMapper, userDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(jwtProvider, blacklistTokenService, objectMapper, accountService), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(withDefaults())
                 .httpBasic(withDefaults());
 

@@ -76,4 +76,10 @@ public class GlobalExceptionHandler {
         ExceptionResponse response = ExceptionResponse.of(ExceptionCode.EXPIRE_ACCESS_TOKEN);
         return ResponseEntity.badRequest().body(response);
     }
+
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<ExceptionResponse> handler(Exception e) {
+        ExceptionResponse response = ExceptionResponse.of(e);
+        return ResponseEntity.badRequest().body(response);
+    }
 }

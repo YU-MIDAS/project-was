@@ -22,7 +22,7 @@ public class AccountService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final BlacklistTokenService blacklistTokenService;
 
-    public Account read(String accountName){
+    public Account read(String accountName){ //loadByUsername
         return accountRepository.findByAccountName(accountName)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ACCOUNT_NOT_FOUND));
     }

@@ -6,8 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ExceptionCode {
     //access
-    EMPTY_TOKEN(HttpStatus.BAD_REQUEST, "헤더에 토큰이 존재하지 않습니다."),
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 서명의 토큰입니다."),
     WRONG_TOKEN(HttpStatus.UNAUTHORIZED, "올바르지 않은 토큰 형식입니다."),
     EXPIRE_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰 입니다."),
 
