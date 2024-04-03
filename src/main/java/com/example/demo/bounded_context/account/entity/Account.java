@@ -8,7 +8,7 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String accountName;
@@ -21,15 +21,24 @@ public class Account extends BaseTimeEntity {
 
     private String nickname;
 
-    private String region;
+    private String state;
+
+    private String city;
+
+    private Double latitude;
+
+    private Double longitude;
 
     @Builder
-    public Account(String accountName, String password, String email, String nickname, String region) {
+    public Account(String accountName, String password, String email, String nickname, String state, String city, Double latitude, Double longitude) {
         this.accountName = accountName;
         this.password = password;
         this.email = email;
         this.nickname = nickname;
-        this.region = region;
+        this.state = state;
+        this.city = city;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }
 
