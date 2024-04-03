@@ -26,19 +26,37 @@ public class LocationController {
 
     @GetMapping("/medicine")
     @Operation(summary = "폐의약품 위치", description = "주소를 사용한 폐의약품 수거함 위치 조회")
-    public ResponseEntity<List<LocationResponse>> findProcess(@RequestBody AddressRequest addressRequest) {
+    public ResponseEntity<List<LocationResponse>> findMedicine(@RequestBody AddressRequest addressRequest) {
         List<LocationResponse> response = locationService.findMedicine(addressRequest.getState(), addressRequest.getCity());
         return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/medicine/{radius}")
     @Operation(summary = "폐의약품 위치", description = "사용자의 위치, 반경(m) 사용한 폐의약품 수거함 위치 조회")
-    public ResponseEntity<List<LocationResponse>> findProcess(@AuthorizationHeader Long id, @PathVariable Double radius) {
+    public ResponseEntity<List<LocationResponse>> findMedicine(@AuthorizationHeader Long id, @PathVariable Double radius) {
         Account account = accountService.read(id);
         if(account.getLatitude() == null || account.getLongitude() == null){
             throw new CustomException(ExceptionCode.EMPTY_LOCATION);
         }
         List<LocationResponse> response = locationService.findMedicine(account.getLatitude(), account.getLongitude(), radius);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/lampAndBattery")
+    @Operation(summary = "폐형광등 및 폐건전지 위치", description = "주소를 사용한 폐형광등 및 폐건전지 수거함 위치 조회")
+    public ResponseEntity<List<LocationResponse>> findLampAndBattery(@RequestBody AddressRequest addressRequest) {
+        List<LocationResponse> response = locationService.findLampAndBattery(addressRequest.getState(), addressRequest.getCity());
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/lampAndBattery/{radius}")
+    @Operation(summary = "폐형광등 및 폐건전지 위치", description = "사용자의 위치, 반경(m) 사용한 폐형광등 및 폐건전지 수거함 위치 조회")
+    public ResponseEntity<List<LocationResponse>> findLampAndBattery(@AuthorizationHeader Long id, @PathVariable Double radius) {
+        Account account = accountService.read(id);
+        if(account.getLatitude() == null || account.getLongitude() == null){
+            throw new CustomException(ExceptionCode.EMPTY_LOCATION);
+        }
+        List<LocationResponse> response = locationService.findLampAndBattery(account.getLatitude(), account.getLongitude(), radius);
         return ResponseEntity.ok().body(response);
     }
 }
