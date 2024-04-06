@@ -5,7 +5,6 @@ import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.jwt.JwtProvider;
 import com.example.demo.base.refresh_token.RefreshToken;
 import com.example.demo.base.refresh_token.RefreshTokenService;
-import com.example.demo.bounded_context.account.service.AccountService;
 import com.example.demo.bounded_context.auth.dto.SignInAccountRequest;
 import com.example.demo.bounded_context.auth.dto.SignUpAccountRequest;
 import com.example.demo.bounded_context.auth.dto.TokenResponse;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AccountRepository accountRepository;
-    private final AccountService accountService;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -39,6 +37,9 @@ public class AuthService {
                 .accountName(request.getAccountName())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
+                .nickname(request.getNickname())
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
                 .build();
 
         return accountRepository.save(account);
