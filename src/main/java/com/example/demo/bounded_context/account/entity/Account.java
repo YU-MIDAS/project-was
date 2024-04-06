@@ -16,14 +16,10 @@ public class Account extends BaseTimeEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     private String nickname;
-
-    private String state;
-
-    private String city;
 
     private Double latitude;
 
@@ -35,8 +31,6 @@ public class Account extends BaseTimeEntity {
         this.password = password;
         this.email = email;
         this.nickname = nickname;
-        this.state = state;
-        this.city = city;
         this.latitude = latitude;
         this.longitude = longitude;
     }
