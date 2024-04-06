@@ -25,6 +25,7 @@ public enum ExceptionCode {
     INVALID_SIGN_OUT(HttpStatus.BAD_REQUEST, "비정상적인 로그아웃 시도입니다."),
 
     DUPLICATE_NAME(HttpStatus.BAD_REQUEST, "중복된 이름이 존재합니다."),
+    EMPTY_LOCATION(HttpStatus.BAD_REQUEST, "위치정보가 존재하지 않습니다."),
     EMPTY_SOLUTION(HttpStatus.BAD_REQUEST, "배출방법이 존재하지 않습니다.");
 
     private HttpStatus status;
