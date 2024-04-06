@@ -5,9 +5,10 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,6 +54,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
+    //VALID
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ExceptionResponse> handler(MethodArgumentNotValidException e){
+        StringBuilder message = new StringBuilder();
+        e.getBindingResult().getAllErrors()
+                .forEach(error -> message
+                        .append(((FieldError) error).getField() + " : ")
+                        .append(error.getDefaultMessage() + "\n"));
+        ExceptionResponse response = ExceptionResponse.of(e.getClass().getSimpleName(), message.toString());
+        return ResponseEntity.badRequest().body(response);
+    }
+
     /**
      * JWT 관련 에러
      */
@@ -60,26 +73,27 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SignatureException.class)
     protected ResponseEntity<ExceptionResponse> handler(SignatureException e) {
         ExceptionResponse response = ExceptionResponse.of(ExceptionCode.INVALID_TOKEN);
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
     //형식
     @ExceptionHandler(MalformedJwtException.class)
     protected ResponseEntity<ExceptionResponse> handler(MalformedJwtException e) {
         ExceptionResponse response = ExceptionResponse.of(ExceptionCode.WRONG_TOKEN);
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
     //만료
     @ExceptionHandler(ExpiredJwtException.class)
     protected ResponseEntity<ExceptionResponse> handler(ExpiredJwtException e) {
         ExceptionResponse response = ExceptionResponse.of(ExceptionCode.EXPIRE_ACCESS_TOKEN);
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
+    //SYSTEM
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ExceptionResponse> handler(Exception e) {
         ExceptionResponse response = ExceptionResponse.of(e);
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
