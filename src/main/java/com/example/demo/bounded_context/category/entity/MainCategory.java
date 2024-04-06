@@ -22,7 +22,7 @@ public class MainCategory {
     private String solution;
 
     @OneToOne
-    @JoinColumn(name = "IMAGE_ID", nullable = false)
+    @JoinColumn(name = "IMAGE_ID")
     private Image imageId;
 
     @Builder
@@ -31,5 +31,4 @@ public class MainCategory {
         this.solution = solution;
         this.imageId = imageId;
     }
-
 }
