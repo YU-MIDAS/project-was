@@ -7,8 +7,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RequestQuestionBoardDto {
-    private String trashName;
+public class CreateQuestionBoardDto {
+    private String title;
 
     private String content;
+
+    private String imageUrl;
+
+    private String category;
 }
