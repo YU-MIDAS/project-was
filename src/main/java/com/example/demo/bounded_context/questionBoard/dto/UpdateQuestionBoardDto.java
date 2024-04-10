@@ -1,12 +1,12 @@
 package com.example.demo.bounded_context.questionBoard.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UpdateQuestionBoardDto {
     private String title;
 

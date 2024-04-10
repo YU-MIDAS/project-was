@@ -18,12 +18,13 @@ public class QuestionBoardController {
     private final QuestionBoardService questionBoardService;
     private final AccountService accountService;
 
-    @PostMapping // - 로그인한 사용자는 게시글을 작성할 수 있다
-    public ResponseEntity<?> createQuestionBoard(@AuthorizationHeader Long id, @RequestBody CreateQuestionBoardDto createQuestionBoardDto){
+    @PostMapping("/create") // - 로그인한 사용자는 게시글을 작성할 수 있다
+    public ResponseEntity<?> createQuestionBoard(@AuthorizationHeader Long id,
+                                                 @RequestBody CreateQuestionBoardDto createQuestionBoardDto){
         Account writer = accountService.read(id);; // writer가 현재 누구
         questionBoardService.create(createQuestionBoardDto, writer);
 
-        return ResponseEntity.ok("게시글 작성 성공");
+        return ResponseEntity.ok(id);
     }
 
     // 게시글 목록(리스트) 보기(페이징 필요?)
@@ -37,7 +38,7 @@ public class QuestionBoardController {
 
 
 
-    @PostMapping("/update/{questionBoardId}") // - 게시글 업데이트
+    @PutMapping("/update/{questionBoardId}") // - 게시글 업데이트
     public ResponseEntity<?> updateQuestionBoard(@AuthorizationHeader Long id,
                                                  @PathVariable Long questionBoardId,
                                                  @RequestBody UpdateQuestionBoardDto updateQuestionBoardDto) {

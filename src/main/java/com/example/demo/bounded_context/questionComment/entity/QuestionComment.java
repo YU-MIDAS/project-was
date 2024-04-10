@@ -26,7 +26,7 @@ public class QuestionComment extends BaseTimeEntity {
     @ManyToOne
     private QuestionBoard questionBoard;
 
-    @JoinColumn(name = "WRITER_ID", nullable = false)
+    @JoinColumn(name = "COMMENT_WRITER_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Account writer;
 

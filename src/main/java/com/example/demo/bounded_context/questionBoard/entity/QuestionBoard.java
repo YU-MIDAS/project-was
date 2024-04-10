@@ -33,15 +33,15 @@ public class QuestionBoard extends BaseTimeEntity {
 
     private boolean adopted; //채택유무
 
-    @JoinColumn(name = "WRITER_ID")
-    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ADOPTED_WRITER_ID", nullable = true)
+    @OneToOne(fetch = FetchType.EAGER)
     private QuestionComment adoptedComment; //채택된 댓글
 
-    @OneToMany(mappedBy = "posts", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE) //게시글 삭제시 삭제
+    @OneToMany(mappedBy = "questionBoard", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE) //게시글 삭제시 삭제
     private List<QuestionComment> comments;
 
-    @JoinColumn(name = "WRITER_ID", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "QUESTION_WRITER_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Account writer;
 
     @Column(columnDefinition = "integer default 0", nullable = false)
