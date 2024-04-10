@@ -18,17 +18,17 @@ public class QuestionBoardController {
     private final QuestionBoardService questionBoardService;
     private final AccountService accountService;
 
-    @PostMapping // - ·Î±×ÀÎÇÑ »ç¿ëÀÚ´Â °Ô½Ã±ÛÀ» ÀÛ¼ºÇÒ ¼ö ÀÖ´Ù
+    @PostMapping // - ë¡œê·¸ì¸í•œ ì‚¬ìš©ìëŠ” ê²Œì‹œê¸€ì„ ì‘ì„±í•  ìˆ˜ ìˆë‹¤
     public ResponseEntity<?> createQuestionBoard(@AuthorizationHeader Long id, @RequestBody CreateQuestionBoardDto createQuestionBoardDto){
-        Account writer = accountService.read(id);; // writer°¡ ÇöÀç ´©±¸
+        Account writer = accountService.read(id);; // writerê°€ í˜„ì¬ ëˆ„êµ¬
         questionBoardService.create(createQuestionBoardDto, writer);
 
-        return ResponseEntity.ok("°Ô½Ã±Û ÀÛ¼º ¼º°ø");
+        return ResponseEntity.ok("ê²Œì‹œê¸€ ì‘ì„± ì„±ê³µ");
     }
 
-    // °Ô½Ã±Û ¸ñ·Ï(¸®½ºÆ®) º¸±â(ÆäÀÌÂ¡ ÇÊ¿ä?)
+    // ê²Œì‹œê¸€ ëª©ë¡(ë¦¬ìŠ¤íŠ¸) ë³´ê¸°(í˜ì´ì§• í•„ìš”?)
 
-    @GetMapping("/read/{questionBoardId}") // - °Ô½Ã±Û ÀÚ¼¼È÷ º¸±â, (´ñ±Û-ÆäÀÌÁö³×ÀÌ¼Ç ÇÊ¿ä?)
+    @GetMapping("/read/{questionBoardId}") // - ê²Œì‹œê¸€ ìì„¸íˆ ë³´ê¸°, (ëŒ“ê¸€-í˜ì´ì§€ë„¤ì´ì…˜ í•„ìš”?)
     public ResponseEntity<ReadQuestionBoardDto> readQuestionBoardById(@PathVariable Long questionBoardId) {
         ReadQuestionBoardDto readQuestionBoardDto = questionBoardService.read(questionBoardId);
 
@@ -37,7 +37,7 @@ public class QuestionBoardController {
 
 
 
-    @PostMapping("/update/{questionBoardId}") // - °Ô½Ã±Û ¾÷µ¥ÀÌÆ®
+    @PostMapping("/update/{questionBoardId}") // - ê²Œì‹œê¸€ ì—…ë°ì´íŠ¸
     public ResponseEntity<?> updateQuestionBoard(@AuthorizationHeader Long id,
                                                  @PathVariable Long questionBoardId,
                                                  @RequestBody UpdateQuestionBoardDto updateQuestionBoardDto) {
@@ -45,27 +45,27 @@ public class QuestionBoardController {
         ReadQuestionBoardDto readQuestionBoardDto = questionBoardService.read(questionBoardId);
         if(readQuestionBoardDto.getWriter()==user){
             questionBoardService.update(questionBoardId,updateQuestionBoardDto);
-            return ResponseEntity.ok("°Ô½Ã±Û ¼öÁ¤¿Ï·á");
+            return ResponseEntity.ok("ê²Œì‹œê¸€ ìˆ˜ì •ì™„ë£Œ");
         }
         else{
-            return ResponseEntity.ok("±ÇÇÑÀÌ ¾ø½À´Ï´Ù");
+            return ResponseEntity.ok("ê¶Œí•œì´ ì—†ìŠµë‹ˆë‹¤");
         }
     }
 
-    @GetMapping("/delete/{questionBoardId}") // - °Ô½Ã±Û »èÁ¦
+    @GetMapping("/delete/{questionBoardId}")  // - ê²Œì‹œê¸€ ì‚­ì œ
     public ResponseEntity<?> deleteQuestionBoard(@AuthorizationHeader Long id, @PathVariable Long questionBoardId) {
         Account user = accountService.read(id);
         ReadQuestionBoardDto readQuestionBoardDto = questionBoardService.read(questionBoardId);
         if(readQuestionBoardDto.getWriter()==user){
             questionBoardService.delete(questionBoardId);
-            return ResponseEntity.ok("°Ô½Ã±Û »èÁ¦¿Ï·á");
+            return ResponseEntity.ok("ê²Œì‹œê¸€ ì‚­ì œì™„ë£Œ");
         }
         else{
-            return ResponseEntity.ok("±ÇÇÑÀÌ ¾ø½À´Ï´Ù");
+            return ResponseEntity.ok("ê¶Œí•œì´ ì—†ìŠµë‹ˆë‹¤");
         }
     }
 
-    @PostMapping("/read/{questionBoardId}/{questionCommentId}") // - ´ñ±Û Ã¤ÅÃ
+    @PostMapping("/read/{questionBoardId}/{questionCommentId}") // - ëŒ“ê¸€ ì±„íƒ
     public ResponseEntity<?> adoptingQuestionBoardComment(@AuthorizationHeader Long id,
                                                           @PathVariable Long questionBoardId,
                                                           @PathVariable Long questionCommentId){
@@ -73,10 +73,10 @@ public class QuestionBoardController {
         ReadQuestionBoardDto readQuestionBoardDto = questionBoardService.read(questionBoardId);
         if(readQuestionBoardDto.getWriter()==user&& !readQuestionBoardDto.isAdopted()){
             questionBoardService.adopting(questionBoardId,questionCommentId);
-            return ResponseEntity.ok("´ñ±Û Ã¤ÅÃ ¿Ï·á");
+            return ResponseEntity.ok("ëŒ“ê¸€ ì±„íƒ ì™„ë£Œ");
         }
         else{
-            return ResponseEntity.ok("±ÇÇÑÀÌ ¾ø½À´Ï´Ù");
+            return ResponseEntity.ok("ê¶Œí•œì´ ì—†ìŠµë‹ˆë‹¤");
         }
     }
 
