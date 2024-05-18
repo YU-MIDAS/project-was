@@ -13,6 +13,4 @@ public class CreateQuestionBoardDto {
     private String content;
 
     private String imageUrl;
-
-    private String category;
 }

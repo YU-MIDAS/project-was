@@ -26,7 +26,6 @@ public class QuestionBoardService {
                 .title(createQuestionBoardDto.getTitle())
                 .content(createQuestionBoardDto.getContent())
                 .imageUrl(createQuestionBoardDto.getImageUrl())
-                .category(createQuestionBoardDto.getCategory())
                 .recommend(0)
                 .adopted(false)
                 .writer(writer)

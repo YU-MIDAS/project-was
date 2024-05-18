@@ -27,8 +27,6 @@ public class QuestionBoard extends BaseTimeEntity {
 
     private String content;
 
-    private String category; // 질문 or 공략
-
     private String imageUrl; //참조X 자체컬럼
 
     private boolean adopted; //채택유무
@@ -48,10 +46,9 @@ public class QuestionBoard extends BaseTimeEntity {
     private Integer recommend; //추천수, 추천기능을 위해선 엔티티를 하나 더 작성해야한다고 생각,,(멤버,보드 관계엔티티로써)
 
     @Builder
-    public QuestionBoard(String title, String content, String category ,Integer recommend, Account writer, String imageUrl, Boolean adopted){
+    public QuestionBoard(String title, String content, Integer recommend, Account writer, String imageUrl, Boolean adopted){
         this.title = title;
         this.content = content;
-        this.category = category;
         this.recommend = recommend;
         this.writer = writer;
         this.imageUrl = imageUrl;
