@@ -27,8 +27,6 @@ public class ReadQuestionBoardDto {
 
     private boolean adopted;
 
-    private String category;
-
     private List<QuestionCommentResponseDto> comments;
 
     private QuestionComment adoptedComment;
@@ -39,7 +37,6 @@ public class ReadQuestionBoardDto {
         this.writer = questionBoard.getWriter();
         this.imageUrl=questionBoard.getImageUrl();
         this.adopted=questionBoard.isAdopted();
-        this.category=questionBoard.getCategory();
         this.comments=questionBoard.getComments().stream().map(QuestionCommentResponseDto::new).collect(Collectors.toList());
         this.adoptedComment=questionBoard.getAdoptedComment();
     }
