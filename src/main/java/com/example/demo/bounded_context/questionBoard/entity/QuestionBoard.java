@@ -31,7 +31,7 @@ public class QuestionBoard extends BaseTimeEntity {
 
     private boolean adopted; //채택유무
 
-    @JoinColumn(name = "ADOPTED_WRITER_ID", nullable = true)
+    @JoinColumn(name = "ADOPTED_COMMENT_ID", nullable = true)
     @OneToOne(fetch = FetchType.EAGER)
     private QuestionComment adoptedComment; //채택된 댓글
 
