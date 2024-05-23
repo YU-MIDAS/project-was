@@ -5,23 +5,26 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class AccountInfoDto {
+public class AccountResponse {
     String accountName;
+    String email;
     String nickname;
     Double latitude;
     Double longitude;
 
     @Builder
-    public AccountInfoDto(String accountName, String nickname, Double latitude, Double longitude) {
+    public AccountResponse(String accountName, String email, String nickname, Double latitude, Double longitude) {
         this.accountName = accountName;
+        this.email = email;
         this.nickname = nickname;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public static AccountInfoDto of(Account account){
-        return AccountInfoDto.builder()
+    public static AccountResponse fromEntity(Account account){
+        return AccountResponse.builder()
                 .accountName(account.getAccountName())
+                .email(account.getEmail())
                 .nickname(account.getNickname())
                 .latitude(account.getLatitude())
                 .longitude(account.getLongitude())

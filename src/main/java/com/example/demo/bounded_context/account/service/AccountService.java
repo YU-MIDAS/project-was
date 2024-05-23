@@ -5,9 +5,8 @@ import com.example.demo.base.blacklist_token.BlacklistTokenService;
 import com.example.demo.base.exception.CustomException;
 import com.example.demo.base.exception.ExceptionCode;
 import com.example.demo.base.refresh_token.RefreshToken;
-import com.example.demo.base.refresh_token.RefreshTokenRepository;
 import com.example.demo.base.refresh_token.RefreshTokenService;
-import com.example.demo.bounded_context.account.dto.AccountInfoRequest;
+import com.example.demo.bounded_context.account.dto.AccountRequest;
 import com.example.demo.bounded_context.account.entity.Account;
 import com.example.demo.bounded_context.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,17 +54,16 @@ public class AccountService {
             throw new CustomException(ExceptionCode.INVALID_WITHDRAWAL);
         }
         refreshTokenService.remove(refresh.getAccountId());
-        remove(refresh.getAccountId());
+        delete(refresh.getAccountId());
     }
 
-    public Account update(Long accountId, AccountInfoRequest request){
+    public Account update(Long accountId, AccountRequest request){
         Account account = read(accountId);
-        return accountRepository.save(account.update(request));
-    }
-
-    public Account remove(Long accountId){
-        Account account = read(accountId);
-        accountRepository.delete(account);
+        account.update(request);
         return account;
+    }
+
+    public void delete(Long accountId){
+        accountRepository.deleteById(accountId);
     }
 }
