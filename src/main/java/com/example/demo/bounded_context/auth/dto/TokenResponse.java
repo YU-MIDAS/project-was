@@ -1,16 +1,10 @@
 package com.example.demo.bounded_context.auth.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-
-@Getter
-public class TokenResponse {
-    String accessToken;
-    String refreshToken;
-
-    @Builder
-    public TokenResponse(String accessToken, String refreshToken) {
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
+public record TokenResponse(
+        String accessToken,
+        String refreshToken
+) {
+    public static TokenResponse of(String accessToken, String refreshToken) {
+        return new TokenResponse(accessToken, refreshToken);
     }
 }

@@ -31,15 +31,15 @@ public class AuthService {
 
     @Transactional
     public Account signUp(@RequestBody SignUpAccountRequest request){
-        isDuplicated(request.getAccountName());
+        isDuplicated(request.accountName());
 
         Account account = Account.builder()
-                .accountName(request.getAccountName())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .email(request.getEmail())
-                .nickname(request.getNickname())
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
+                .accountName(request.accountName())
+                .password(passwordEncoder.encode(request.password()))
+                .email(request.email())
+                .nickname(request.nickname())
+                .latitude(request.latitude())
+                .longitude(request.longitude())
                 .build();
 
         return accountRepository.save(account);
@@ -53,10 +53,7 @@ public class AuthService {
         String accessToken = jwtProvider.generatorAccessToken(user.getId());
         RefreshToken refreshToken = refreshTokenService.issueRefreshToken(user.getId());
 
-        return TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getToken())
-                .build();
+        return TokenResponse.of(accessToken, refreshToken.getToken());
     }
 
     /**
@@ -66,10 +63,7 @@ public class AuthService {
         RefreshToken refreshToken = refreshTokenService.reIssueRefreshToken(token);
         String accessToken = jwtProvider.generatorAccessToken(refreshToken.getAccountId());
 
-        return TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getToken())
-                .build();
+        return TokenResponse.of(accessToken, refreshToken.getToken());
     }
 
     public void isDuplicated(String accountName){
@@ -85,7 +79,7 @@ public class AuthService {
     public User authenticate(SignInAccountRequest request){
         //인증 객체 셍성 : Authentication 구현 객체 UsernamePasswordAuthenticationToken
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(request.getAccountName(), request.getPassword());
+                new UsernamePasswordAuthenticationToken(request.accountName(), request.password());
 
         //인증 : CustomUserDetailsService - loadUserByUsername 사용
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);

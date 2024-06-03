@@ -12,9 +12,9 @@ public class HeaderProvider {
 
     public HttpHeaders generateTokenHeader(TokenResponse tokenResponse){
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HttpHeaders.AUTHORIZATION, tokenResponse.getAccessToken());
+        httpHeaders.set(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken());
         httpHeaders.set(HttpHeaders.SET_COOKIE,
-                cookieProvider.generateTokenCookie(tokenResponse.getRefreshToken()).toString());
+                cookieProvider.generateTokenCookie(tokenResponse.accessToken()).toString());
         return httpHeaders;
     }
 }
