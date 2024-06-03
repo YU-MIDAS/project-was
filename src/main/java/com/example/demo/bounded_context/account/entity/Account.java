@@ -2,7 +2,7 @@ package com.example.demo.bounded_context.account.entity;
 
 
 import com.example.demo.base.common.BaseTimeEntity;
-import com.example.demo.bounded_context.account.dto.AccountRequest;
+import com.example.demo.bounded_context.account.dto.AccountUpdateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,10 +22,8 @@ public class Account extends BaseTimeEntity {
 
     private String nickname;
 
-//    @Column(nullable = false)
     private Double latitude;
 
-//    @Column(nullable = false)
     private Double longitude;
 
     @Builder
@@ -34,15 +32,15 @@ public class Account extends BaseTimeEntity {
         this.password = password;
         this.email = email;
         this.nickname = nickname;
-        this.latitude = latitude == null ? 35.8704 : latitude;
-        this.longitude = longitude == null ? 128.5564 : longitude;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public void update(AccountRequest request){
-        this.email = request.getEmail();
-        this.nickname = request.getNickname();
-        this.latitude = request.getLatitude();
-        this.longitude = request.getLongitude();
+    public void update(AccountUpdateRequest request){
+        this.email = request.email();
+        this.nickname = request.nickname();
+        this.latitude = request.latitude();
+        this.longitude = request.longitude();
     }
 }
 
