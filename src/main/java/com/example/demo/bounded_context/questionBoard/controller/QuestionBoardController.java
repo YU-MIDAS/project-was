@@ -21,7 +21,7 @@ public class QuestionBoardController {
     @PostMapping("/create") // - 로그인한 사용자는 게시글을 작성할 수 있다
     public ResponseEntity<?> createQuestionBoard(@AuthorizationHeader Long id,
                                                  @RequestBody CreateQuestionBoardDto createQuestionBoardDto){
-        Account writer = accountService.read(id);; // writer가 현재 누구
+        Account writer = accountService.findByAccountId(id);; // writer가 현재 누구
         questionBoardService.create(createQuestionBoardDto, writer);
 
         return ResponseEntity.ok(id);
@@ -42,7 +42,7 @@ public class QuestionBoardController {
     public ResponseEntity<?> updateQuestionBoard(@AuthorizationHeader Long id,
                                                  @PathVariable Long questionBoardId,
                                                  @RequestBody UpdateQuestionBoardDto updateQuestionBoardDto) {
-        Account user = accountService.read(id);
+        Account user = accountService.findByAccountId(id);
         ReadQuestionBoardDto readQuestionBoardDto = questionBoardService.read(questionBoardId);
         if(readQuestionBoardDto.getWriter()==user){
             questionBoardService.update(questionBoardId,updateQuestionBoardDto);
@@ -55,7 +55,7 @@ public class QuestionBoardController {
 
     @GetMapping("/delete/{questionBoardId}")  // - 게시글 삭제
     public ResponseEntity<?> deleteQuestionBoard(@AuthorizationHeader Long id, @PathVariable Long questionBoardId) {
-        Account user = accountService.read(id);
+        Account user = accountService.findByAccountId(id);
         ReadQuestionBoardDto readQuestionBoardDto = questionBoardService.read(questionBoardId);
         if(readQuestionBoardDto.getWriter()==user){
             questionBoardService.delete(questionBoardId);
@@ -70,7 +70,7 @@ public class QuestionBoardController {
     public ResponseEntity<?> adoptingQuestionBoardComment(@AuthorizationHeader Long id,
                                                           @PathVariable Long questionBoardId,
                                                           @PathVariable Long questionCommentId){
-        Account user = accountService.read(id);
+        Account user = accountService.findByAccountId(id);
         ReadQuestionBoardDto readQuestionBoardDto = questionBoardService.read(questionBoardId);
         if(readQuestionBoardDto.getWriter()==user&& !readQuestionBoardDto.isAdopted()){
             questionBoardService.adopting(questionBoardId,questionCommentId);

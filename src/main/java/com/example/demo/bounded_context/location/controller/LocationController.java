@@ -34,7 +34,7 @@ public class LocationController {
     @GetMapping("/medicine/{radius}")
     @Operation(summary = "폐의약품 위치", description = "사용자의 위치, 반경(m) 사용한 폐의약품 수거함 위치 조회")
     public ResponseEntity<List<LocationResponse>> findMedicine(@AuthorizationHeader Long id, @PathVariable Double radius) {
-        Account account = accountService.read(id);
+        Account account = accountService.findByAccountId(id);
         if(account.getLatitude() == null || account.getLongitude() == null){
             throw new CustomException(ExceptionCode.EMPTY_LOCATION);
         }
@@ -52,7 +52,7 @@ public class LocationController {
     @GetMapping("/lampAndBattery/{radius}")
     @Operation(summary = "폐형광등 및 폐건전지 위치", description = "사용자의 위치, 반경(m) 사용한 폐형광등 및 폐건전지 수거함 위치 조회")
     public ResponseEntity<List<LocationResponse>> findLampAndBattery(@AuthorizationHeader Long id, @PathVariable Double radius) {
-        Account account = accountService.read(id);
+        Account account = accountService.findByAccountId(id);
         if(account.getLatitude() == null || account.getLongitude() == null){
             throw new CustomException(ExceptionCode.EMPTY_LOCATION);
         }

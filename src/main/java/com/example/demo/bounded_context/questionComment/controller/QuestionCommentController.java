@@ -20,7 +20,7 @@ public class QuestionCommentController {
     public ResponseEntity<?> createQuestionBoard(@PathVariable Long questionBoardId,
                                                  @AuthorizationHeader Long id,
                                                  @RequestBody String content){
-        Account writer = accountService.read(id);; // writer가 현재 누구
+        Account writer = accountService.findByAccountId(id);; // writer가 현재 누구
         questionCommentService.create(content,writer,questionBoardId);
 
         return ResponseEntity.ok("댓글 생성완료");
@@ -30,7 +30,7 @@ public class QuestionCommentController {
     public ResponseEntity<?> updateQuestionComment(@AuthorizationHeader Long id,
                                                    @PathVariable Long questionCommentId,
                                                    @RequestBody String content) {
-        Account user = accountService.read(id);
+        Account user = accountService.findByAccountId(id);
         QuestionComment questionComment=questionCommentService.read(questionCommentId);
         if(questionComment.getWriter()==user){
             questionCommentService.update(questionCommentId,content);
@@ -44,7 +44,7 @@ public class QuestionCommentController {
     @GetMapping("/delete/{questionCommentId}")  // - 댓글 삭제
     public ResponseEntity<?> deleteQuestionComment(@AuthorizationHeader Long id,
                                                    @PathVariable Long questionCommentId) {
-        Account user = accountService.read(id);
+        Account user = accountService.findByAccountId(id);
         QuestionComment questionComment=questionCommentService.read(questionCommentId);
         if(questionComment.getWriter()==user){
             questionCommentService.delete(questionCommentId);

@@ -4,7 +4,7 @@ import com.example.demo.base.Resolver.AccessToken;
 import com.example.demo.base.Resolver.AuthorizationHeader;
 import com.example.demo.base.common.AuthConstants;
 import com.example.demo.bounded_context.account.dto.AccountResponse;
-import com.example.demo.bounded_context.account.dto.AccountRequest;
+import com.example.demo.bounded_context.account.dto.AccountUpdateRequest;
 import com.example.demo.bounded_context.account.entity.Account;
 import com.example.demo.bounded_context.account.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,16 +37,15 @@ public class AccountController {
     @GetMapping("/me")
     @Operation(summary = "정보 조회", description = "access token 을 사용한 사용자 정보 조회")
     public ResponseEntity<AccountResponse> read(@AuthorizationHeader Long id) {
-        Account account = accountService.read(id);
+        Account account = accountService.findByAccountId(id);
         AccountResponse accountResponse = AccountResponse.fromEntity(account);
         return ResponseEntity.ok().body(accountResponse);
     }
 
     @PutMapping("/me")
     @Operation(summary = "정보 수정", description = "access token 을 사용한 사용자 정보 수정")
-    public ResponseEntity<AccountResponse> update(@AuthorizationHeader Long id, @RequestBody AccountRequest request) {
-        Account account = accountService.update(id, request);
-        AccountResponse accountResponse = AccountResponse.fromEntity(account);
-        return ResponseEntity.ok().body(accountResponse);
+    public ResponseEntity<?> update(@AuthorizationHeader Long id, @RequestBody AccountUpdateRequest request) {
+        accountService.update(id, request);
+        return ResponseEntity.ok().body("수정에 성공했습니다.");
     }
 }

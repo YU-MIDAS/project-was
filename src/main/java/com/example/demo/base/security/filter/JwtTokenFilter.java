@@ -1,20 +1,13 @@
 package com.example.demo.base.security.filter;
 
 import com.example.demo.base.blacklist_token.BlacklistTokenService;
-import com.example.demo.base.exception.CustomException;
-import com.example.demo.base.exception.ExceptionCode;
 import com.example.demo.base.exception.ExceptionResponse;
 import com.example.demo.base.exception.JwtExceptionProvider;
 import com.example.demo.base.jwt.JwtProvider;
-import com.example.demo.base.security.UserDetailsServiceImpl;
 import com.example.demo.bounded_context.account.entity.Account;
 import com.example.demo.bounded_context.account.service.AccountService;
 import com.example.demo.bounded_context.auth.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -51,7 +42,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             String accessToken = jwtProvider.parseToken(request);
             blacklistTokenService.checkBlacklist(accessToken); //무효화된 토큰 검사
             Long accountId = Long.parseLong(jwtProvider.getAccountId(accessToken)); //토큰 id 추출
-            Account account = accountService.read(accountId); //데이터베이스 검사
+            Account account = accountService.findByAccountId(accountId); //데이터베이스 검사
             Authentication authentication = new UsernamePasswordAuthenticationToken(User.of(account), null, null); //인증객체 생성
             SecurityContextHolder.getContext().setAuthentication(authentication); //인증정보 저장
             filterChain.doFilter(request, response);
