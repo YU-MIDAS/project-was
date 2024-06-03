@@ -11,6 +11,7 @@ public class CookieProvider {
         return ResponseCookie.from(AuthConstants.REFRESH_TOKEN, refreshToken)
                 .httpOnly(false)
                 .sameSite("None")
+                .secure(false)
                 .path("/")
                 .maxAge(Duration.ofDays(7))
                 .build();
