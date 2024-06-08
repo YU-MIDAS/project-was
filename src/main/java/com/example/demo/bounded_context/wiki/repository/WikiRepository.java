@@ -1,9 +1,11 @@
 package com.example.demo.bounded_context.wiki.repository;
 
+import com.example.demo.bounded_context.account.entity.Account;
 import com.example.demo.bounded_context.solution.entity.Waste;
 import com.example.demo.bounded_context.wiki.entity.Wiki;
 import com.example.demo.bounded_context.wiki.entity.WikiState;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,11 +26,10 @@ public interface WikiRepository extends JpaRepository<Wiki, Long> {
     @Query("select w from Wiki w join fetch w.writer join fetch w.waste where w.id = :id")
     Optional<Wiki> findFetchById(Long id);
 
-    @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Wiki w SET w.original = :original WHERE w.waste = :waste")
-    public void updateOrigin(Wiki original, Waste waste);
+    @Query("update Wiki w set w.writer = null where w.writer = :account")
+    void updateWriter(Account account);
 
     @Query("select w from Wiki w where w.writer.id = :accountId and w.wikiState = :state")
-    List<Wiki> findByAccountIdAndState(Long accountId, WikiState state, Pageable pageable);
+    Page<Wiki> findByAccountIdAndStateWithPaging(Long accountId, WikiState state, Pageable pageable);
 }
