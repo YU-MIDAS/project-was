@@ -14,7 +14,7 @@ public class HeaderProvider {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken());
         httpHeaders.set(HttpHeaders.SET_COOKIE,
-                cookieProvider.generateTokenCookie(tokenResponse.accessToken()).toString());
+                cookieProvider.generateTokenCookie(tokenResponse.refreshToken()).toString());
         return httpHeaders;
     }
 }
