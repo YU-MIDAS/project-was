@@ -1,9 +1,7 @@
 package com.example.demo.bounded_context.solution.api;
 
 import com.example.demo.base.Resolver.AuthorizationHeader;
-import com.example.demo.bounded_context.solution.dto.ImageRequest;
 import com.example.demo.bounded_context.solution.dto.SolutionRequest;
-import com.example.demo.bounded_context.solution.dto.KeywordRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -21,7 +19,7 @@ public interface SolutionApi {
 
     @GetMapping("/image")
     @Operation(summary = "솔루션 이미지 검색", description = "모든 사용자는 사진을 이용한 인공지능 물질 분류에 따른 솔루션을 조회할 수 있다.")
-    ResponseEntity<?> searchByImage(@RequestBody ImageRequest request);
+    ResponseEntity<?> searchByImage(@RequestParam("imageUrl") String imageUrl);
 
     @GetMapping("/keyword")
     @Operation(summary = "솔루션 키워드 검색", description = "모든 사용자는 키워드를 사용하여 솔루션 검색을 할 수 있다.<br> 승인 되지 않은 솔루션은 검색되지 않는다.")
@@ -38,15 +36,15 @@ public interface SolutionApi {
                                     """)
                     }))
     })
-    ResponseEntity<?> searchByKeyword(@RequestBody KeywordRequest request);
+    ResponseEntity<?> searchByKeyword(@RequestParam("keyword") String keyword);
 
     @GetMapping("/category")
     @Operation(summary = "카테고리별 솔루션 목록 조회", description = "모든 사용자는 카테고리별로 구분된 솔루션 목록을 검색할 수 있다.<br> 승인 되지 않은 솔루션은 검색되지 않는다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "카테고리별 솔루션 목록 검색 성공"),
     })
-    ResponseEntity<?> searchByCategory(@RequestBody KeywordRequest request,
-                                                                     @PageableDefault(page = 0, size = 10) Pageable pageable);
+    ResponseEntity<?> searchByCategory(@RequestParam("category") String category,
+                                       @PageableDefault(page = 0, size = 10) Pageable pageable);
     @PostMapping("")
     @Operation(summary = "새 솔루션 생성", description = "로그인한 사용자는 검색이 실패한 경우 새 솔루션을 생성할 수 있다.<br> 태그를 제외한 이름, 이미지, 카테고리, 솔루션 값은 필수로 입력하여 새 솔루션을 생성할 수 있다.")
     @ApiResponses({

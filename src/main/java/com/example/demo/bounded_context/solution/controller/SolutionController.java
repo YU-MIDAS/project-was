@@ -2,7 +2,6 @@ package com.example.demo.bounded_context.solution.controller;
 
 import com.example.demo.base.Resolver.AuthorizationHeader;
 import com.example.demo.bounded_context.solution.dto.DetectResponse;
-import com.example.demo.bounded_context.solution.dto.ImageRequest;
 import com.example.demo.bounded_context.solution.api.SolutionApi;
 import com.example.demo.bounded_context.solution.dto.*;
 import com.example.demo.bounded_context.solution.service.SolutionUseCase;
@@ -14,24 +13,32 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 @RestController
 @RequiredArgsConstructor
 public class SolutionController implements SolutionApi {
     private final SolutionUseCase solutionUseCase;
 
-    public ResponseEntity<DetectResponse> searchByImage(@RequestBody ImageRequest request) {
-        DetectResponse detectResponse = solutionUseCase.searchByImage(request.getUrl());
-        return ResponseEntity.ok().body(detectResponse);
+    public ResponseEntity<DetectResponse> searchByImage(@RequestParam("imageUrl") String imageUrlEncoding) {
+        try{
+            String imageUrl = URLDecoder.decode(imageUrlEncoding, "UTF-8");
+            DetectResponse detectResponse = solutionUseCase.searchByImage(imageUrl);
+            return ResponseEntity.ok().body(detectResponse);
+        }catch (UnsupportedEncodingException e){
+            throw new IllegalArgumentException("Invalid image URL");
+        }
     }
 
-    public ResponseEntity<SolutionResponse> searchByKeyword(@RequestBody KeywordRequest request){
-        SolutionResponse solution = solutionUseCase.searchByKeyword(request.keyword());
+    public ResponseEntity<SolutionResponse> searchByKeyword(@RequestParam("keyword") String keyword){
+        SolutionResponse solution = solutionUseCase.searchByKeyword(keyword);
         return ResponseEntity.ok().body(solution);
     }
 
-    public ResponseEntity<Page<SolutionListResponse>> searchByCategory(@RequestBody KeywordRequest request,
+    public ResponseEntity<Page<SolutionListResponse>> searchByCategory(@RequestParam("category") String category,
                                                                        @PageableDefault(page = 0, size = 10) Pageable pageable){
-        Page<SolutionListResponse> response = solutionUseCase.searchByCategory(request.keyword(), pageable);
+        Page<SolutionListResponse> response = solutionUseCase.searchByCategory(category, pageable);
         return ResponseEntity.ok().body(response);
     }
 
