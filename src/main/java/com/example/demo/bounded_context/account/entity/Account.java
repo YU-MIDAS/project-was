@@ -25,6 +25,8 @@ public class Account extends BaseTimeEntity {
     @Column(nullable = false)
     private String email;
 
+    private Role role;
+
     private String nickname;
 
     private Double latitude;
@@ -45,6 +47,7 @@ public class Account extends BaseTimeEntity {
         this.nickname = nickname;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.role = Role.USER;
     }
 
     public void update(AccountUpdateRequest request){
