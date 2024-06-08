@@ -13,11 +13,11 @@ import com.example.demo.bounded_context.wiki.entity.Wiki;
 import com.example.demo.bounded_context.wiki.entity.WikiState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,8 +42,8 @@ public class WikiService {
     }
 
     @Transactional(readOnly = true)
-    public List<Wiki> findByAccountIdAndState(Long accountId, WikiState state, Pageable pageable){
-        return wikiRepository.findByAccountIdAndState(accountId, state, pageable);
+    public Page<Wiki> findByAccountIdAndState(Long accountId, WikiState state, Pageable pageable){
+        return wikiRepository.findByAccountIdAndStateWithPaging(accountId, state, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -79,6 +79,11 @@ public class WikiService {
         Optional<Wiki> parentWiki = wikiRepository.findByRecent(waste.getId());
         Wiki wiki = request.toEntity(writer, waste, parentWiki.orElse(null));
         return wikiRepository.save(wiki);
+    }
+
+    @Transactional
+    public void updateWriter(Account writer){
+        wikiRepository.updateWriter(writer);
     }
 
     @Transactional

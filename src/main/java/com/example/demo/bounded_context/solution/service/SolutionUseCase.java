@@ -85,12 +85,12 @@ public class SolutionUseCase {
      * 사용자의 생성 기여 게시물 목록 조회
      * - 사용자는 자신을 포함한 다른 사용자의 생성 기여 게시물 목록을 조회할 수 있다.
      */
-    public List<ContributeCreationListResponse> readContributeCreations(Long accountId,
+    public Page<ContributeCreationListResponse> readContributeCreations(Long accountId,
                                                                         ContributedCreationState state,
                                                                         Pageable pageable){
         log.info("사용자의 생성 기여 게시물 목록 조회");
         Page<Waste> accountCreations = wasteService.findByAccountIdAndStateWithPaging(accountId, state, pageable);
-        return accountCreations.stream().map(ContributeCreationListResponse::fromEntity).toList();
+        return accountCreations.map(ContributeCreationListResponse::fromEntity);
     }
 
     /**
