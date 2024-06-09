@@ -58,7 +58,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/wiki/{id}/accepted",
                                 "/api/wiki/{id}/rejected",
                                 "/api/solution/{id}/accepted",
-                                "/api/solution{id}/rejected").hasRole("ADMIN")
+                                "/api/solution{id}/rejected").hasRole("USER")
                         .anyRequest().permitAll())
                 .addFilterBefore(new JwtTokenFilter(jwtProvider, blacklistTokenService, objectMapper, accountService), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(withDefaults())

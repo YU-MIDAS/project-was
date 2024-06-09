@@ -39,16 +39,18 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        if(request.getMethod().equals("GET")){
-            return request.getServletPath().startsWith("/api/wiki") ||
-                    request.getServletPath().startsWith("/api/solution") ||
-                    request.getServletPath().startsWith("/api/account") ||
-                    request.getServletPath().startsWith("/api/questionBoard")
-                    ;
-        }else if(request.getMethod().equals("POST")){
-            return request.getServletPath().startsWith("/api/s3") ||
-                    request.getServletPath().startsWith("/api/auth");
-        }else return false;
+//        if(request.getMethod().equals("GET")){
+//            return request.getServletPath().startsWith("/api/wiki") ||
+//                    request.getServletPath().startsWith("/api/solution") ||
+//                    request.getServletPath().startsWith("/api/account") ||
+//                    request.getServletPath().startsWith("/api/questionBoard") ||
+//                    request.getServletPath().startsWith("/swagger-ui/")
+//                    ;
+//        }else if(request.getMethod().equals("POST")){
+//            return request.getServletPath().startsWith("/api/s3") ||
+//                    request.getServletPath().startsWith("/api/auth");
+//        }else return false;
+        return true;
     }
 
     @Override
