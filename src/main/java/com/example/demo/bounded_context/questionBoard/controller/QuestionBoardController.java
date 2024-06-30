@@ -54,11 +54,11 @@ public class QuestionBoardController {
         return ResponseEntity.ok(boardPages);
     }
 
-    @GetMapping("/search/{option}/paging")
+    @GetMapping("/search/{option}/{keyword}/paging")
     @Operation(summary = "Q&A 게시글 검색", description = "/search/option/paging?page=번호(1~),{option}1-최신순,2-추천순,3-조회순")
     public ResponseEntity<?> searchPage(@PageableDefault(page = 1) Pageable pageable,
                                         @PathVariable Integer option,
-                                        @RequestBody String keyword) {
+                                        @PathVariable String keyword) {
         if(keyword==null)
             return ResponseEntity.ok("검색할 키워드를 입력해주세요");
         Page<PageQuestionBoardDto> boardPages = questionBoardService.search(pageable,option,keyword);
